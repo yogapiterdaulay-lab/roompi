@@ -15,7 +15,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-align: 1.6;
+            line-height: 1.6;
             color: var(--text-main);
             background-color: var(--bg-color);
             padding: 40px 20px;
@@ -72,6 +72,11 @@
             margin-bottom: 8px;
         }
 
+        a {
+            color: var(--text-main);
+            text-decoration: underline;
+        }
+
         footer {
             text-align: center;
             margin-top: 50px;
@@ -87,46 +92,54 @@
     <a href="index.html" class="back-link">&larr; Back to Home</a>
 
     <h1>Privacy Policy for Mega Music Player</h1>
-    <div class="effective-date">Effective Date: October 8, 2026</div>
+    <div class="effective-date">Effective Date: November 15, 2026</div>
 
-    <p>This Privacy Policy describes how SZ Studio ("we," "our," or "us") handles information in connection with your use of our mobile application, Mega Music Player (the "App"). We are committed to protecting your privacy and ensuring transparency regarding any data interactions.</p>
+    <p>This Privacy Policy describes how SZ Studio ("we," "our," or "us") handles information in connection with your use of our mobile application, Mega Music Player (the "App"). We are committed to protecting your privacy and ensuring transparency regarding all local and online data interactions.</p>
 
     <h2>1. Introduction and Scope</h2>
-    <p>This Privacy Policy applies exclusively to Mega Music Player. Our application is designed to function primarily as a local, offline audio playback tool. By downloading, installing, or using Mega Music Player, you agree to the terms outlined in this Privacy Policy.</p>
+    <p>This Privacy Policy applies exclusively to Mega Music Player. Our application functions both as a local, offline audio player and as an online streaming client for open-access music and public video content. By downloading, installing, or using Mega Music Player, you agree to the practices described in this Privacy Policy.</p>
 
-    <h2>2. Information We Collect</h2>
-    <p>Because Mega Music Player operates locally on your device, we do not collect, store, transmit, or monetize any personal or sensitive user data.</p>
+    <h2>2. Information We Collect and Process</h2>
+    <p>We do not require user accounts, registration, or login credentials to use Mega Music Player. However, to deliver streaming features, measure app stability, and support ongoing development, certain technical and usage data is processed:</p>
     <ul>
-        <li><strong>Personal Information:</strong> We do not require account creation, registration, login credentials, or the submission of personal details (such as your name, email address, or phone number) to use the App.</li>
-        <li><strong>Audio Files and Local Storage:</strong> The App accesses your device's local storage solely to read, index, and play audio files that you explicitly select or store on your device. This media content remains entirely on your local hardware and is never uploaded to any external servers or cloud databases controlled by us.</li>
-        <li><strong>Analytics and Telemetry:</strong> We do not embed third-party tracking frameworks, advertising SDKs, or analytics tools that profile your behavior or track your usage habits.</li>
+        <li><strong>Personal Information:</strong> We do not directly collect or store personal contact details such as your name, email address, phone number, or passwords.</li>
+        <li><strong>Audio Files and Local Storage:</strong> The App accesses your device's local storage solely to read, index, and play audio files stored on your hardware. Your local media files remain strictly on your device and are never uploaded to our servers.</li>
+        <li><strong>Usage Analytics (Firebase Analytics):</strong> We use Google Firebase Analytics to understand how users interact with the App (such as screen views, session duration, and feature engagement). Firebase automatically collects non-personal technical metadata including device model, operating system version, app version, Firebase Installation ID, and coarse geographic location (country/region derived from your IP address).</li>
+        <li><strong>Anonymous Community Telemetry:</strong> To power community-driven music charts, the App may transmit anonymous, aggregated playback counts associated with a randomly generated local identifier. This data cannot be used to personally identify you.</li>
+        <li><strong>Advertising Identifiers (Google AdMob):</strong> To keep the App free, we may display native advertisements powered by Google AdMob. AdMob may collect and process your device's Android Advertising ID, IP address, and ad interaction diagnostics to serve and measure advertisements.</li>
     </ul>
 
     <h2>3. Permissions Requested by the App</h2>
-    <p>To deliver core playback functionality, the App may request specific Android system permissions. These permissions are handled locally on your device:</p>
+    <p>To deliver local and online multimedia playback, the App requests the following Android system permissions:</p>
     <ul>
-        <li><strong>Storage / Media Access:</strong> Used strictly to scan local directories and play your local music files.</li>
-        <li><strong>Audio Focus / Foreground Services:</strong> Used to manage playback states (such as pausing music when receiving a phone call) and to run audio controls smoothly in the notification shade.</li>
+        <li><strong>Storage / Media Access:</strong> Used strictly to scan local directories and play your local audio files.</li>
+        <li><strong>Audio Focus / Foreground Services:</strong> Used to manage playback states (such as pausing audio during phone calls) and display persistent playback controls in the notification shade.</li>
+        <li><strong>Internet and Network State Access:</strong> Required to stream music and video content from third-party APIs, load community charts, transmit anonymous analytics, and display advertisements.</li>
     </ul>
-    <p>We do not use these permissions to harvest contacts, location data, camera feeds, or identifying device info.</p>
+    <p>We never use these permissions to access your contacts, precise GPS coordinates, camera, or microphone.</p>
 
-    <h2>4. Third-Party Services and Links</h2>
-    <p>Mega Music Player does not integrate third-party analytics, social trackers, or ad networks. If our store listing or promotional channels contain links to external sites, those external sites operate under their own independent privacy policies, for which we assume no responsibility.</p>
+    <h2>4. Third-Party Services and APIs</h2>
+    <p>Mega Music Player integrates third-party APIs and SDKs to provide music discovery, video playback, analytics, and advertising. Your use of these features is also subject to the respective privacy policies and terms of those providers:</p>
+    <ul>
+        <li><strong>YouTube API Services:</strong> The video section of the App uses YouTube API Services to display and play video content. By using the video features in Mega Music Player, you agree to be bound by the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Terms of Service</a>. Google's collection and handling of data through YouTube services are governed by the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>. We do not access, store, or harvest your personal YouTube account history or credentials.</li>
+        <li><strong>Audius &amp; Jamendo:</strong> Online music discovery and audio streaming are powered by official developer APIs from <a href="https://audius.co/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Audius</a> and <a href="https://www.jamendo.com/legal/privacy" target="_blank" rel="noopener noreferrer">Jamendo</a>.</li>
+        <li><strong>Google Firebase &amp; AdMob:</strong> Analytics and advertising services are provided by Google. You can learn more about how Google processes data from partner apps at <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">Google Privacy &amp; Terms</a>. You may opt out of personalized advertising at any time by resetting or deleting your Advertising ID in your Android device's Privacy settings.</li>
+    </ul>
 
     <h2>5. Data Security</h2>
-    <p>Because we do not collect or transmit your personal data over the internet, your data remains secure on your personal device. Local files are protected by your device's built-in operating system security architecture.</p>
+    <p>All network communications between Mega Music Player and third-party APIs (including Firebase Analytics, YouTube, Audius, Jamendo, and AdMob) are encrypted in transit using industry-standard HTTPS/TLS protocols. Local media indexes and playback preferences remain stored securely on your device.</p>
 
     <h2>6. Children's Privacy</h2>
-    <p>Our App does not knowingly collect or solicit personal information from anyone under the age of 13. Since the App does not collect any data from any user regardless of age, it is inherently safe for all age groups.</p>
+    <p>Mega Music Player does not knowingly collect personally identifiable information from children under the age of 13. If you are a parent or guardian and believe that personal information has been inadvertently collected through a third-party service, please contact us so we can take appropriate action.</p>
 
     <h2>7. Changes to This Privacy Policy</h2>
-    <p>We may update this Privacy Policy from time to time to reflect updates to the App or changes in regulatory standards. Any modifications will be posted directly on this publicly accessible page with an updated effective date. Continued use of the App following any changes constitutes your acceptance of the revised policy.</p>
+    <p>We may update this Privacy Policy from time to time to reflect new App features or changes in regulatory requirements. Any modifications will be posted on this publicly accessible page with an updated effective date. Continued use of the App following any changes constitutes your acceptance of the revised policy.</p>
 
     <h2>8. Contact Us</h2>
-    <p>If you have any questions, concerns, or inquiries regarding this Privacy Policy or the operation of Mega Music Player, you may reach out directly via:</p>
+    <p>If you have any questions, copyright inquiries, or concerns regarding this Privacy Policy or the operation of Mega Music Player, please contact us via:</p>
     <ul>
         <li><strong>Developer / Entity:</strong> SZ Studio</li>
-        <li><strong>Contact Email:</strong> <a href="mailto:szstudio.me@gmail.com" style="color: inherit;">szstudio.me@gmail.com</a></li>
+        <li><strong>Contact Email:</strong> <a href="mailto:szstudio.me@gmail.com">szstudio.me@gmail.com</a></li>
     </ul>
 
     <footer>
