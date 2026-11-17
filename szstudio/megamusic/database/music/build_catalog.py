@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -10,10 +11,58 @@ YT_API_KEY = os.environ.get("YT_API_KEY", "")
 CATALOG_PATH = Path("data/catalog.json")
 REGIONS_PATH = Path("data/regions.json")
 
-def fetch_json(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "MegaMusicPlayer-Builder/1.0"})
-    with urllib.request.urlopen(req, timeout=15) as res:
-        return json.loads(res.read().decode("utf-8"))
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; MegaMusicPlayer-Builder/1.0)",
+    "Accept": "application/json",
+}
+
+def fetch_json(url, retries=3, timeout=30):
+    last_err = None
+    for attempt in range(1, retries + 1):
+        try:
+            req = urllib.request.Request(url, headers=HEADERS)
+            with urllib.request.urlopen(req, timeout=timeout) as res:
+                return json.loads(res.read().decode("utf-8"))
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                time.sleep(2 * attempt)
+    raise last_err
+
+def fetch_region_chart(region):
+    # Primary: Apple Marketing Tools RSS
+    primary_url = f"https://rss.marketingtools.apple.com/api/v2/{region}/music/most-played/100/songs.json"
+    try:
+        data = fetch_json(primary_url, retries=2, timeout=25)
+        results = data["feed"]["results"]
+        tracks = []
+        for track in results:
+            art = re.sub(r"\d+x\d+bb", "200x200bb", track["artworkUrl100"])
+            tracks.append({
+                "apple_id": str(track["id"]),
+                "title": track["name"],
+                "artist": track["artistName"],
+                "artwork_url": art,
+            })
+        return tracks
+    except Exception as primary_err:
+        print(f"[{region}] Primary RSS timed out ({primary_err}), switching to fallback feed...")
+
+    # Fallback: Akamai-cached iTunes RSS
+    fallback_url = f"https://itunes.apple.com/{region}/rss/topsongs/limit=100/json"
+    data = fetch_json(fallback_url, retries=3, timeout=30)
+    entries = data.get("feed", {}).get("entry", [])
+    tracks = []
+    for entry in entries:
+        raw_art = entry["im:image"][-1]["label"]
+        art = re.sub(r"\d+x\d+bb", "200x200bb", raw_art)
+        tracks.append({
+            "apple_id": str(entry["id"]["attributes"]["im:id"]),
+            "title": entry["im:name"]["label"],
+            "artist": entry["im:artist"]["label"],
+            "artwork_url": art,
+        })
+    return tracks
 
 def resolve_youtube_id(artist, title):
     if not YT_API_KEY:
@@ -24,7 +73,7 @@ def resolve_youtube_id(artist, title):
         f"?part=snippet&type=video&videoEmbeddable=true&maxResults=1&q={q}&key={YT_API_KEY}"
     )
     try:
-        data = fetch_json(url)
+        data = fetch_json(url, retries=2, timeout=20)
         items = data.get("items", [])
         return items[0]["id"]["videoId"] if items else ""
     except Exception:
@@ -37,27 +86,30 @@ def main():
             catalog[item["apple_id"]] = item
 
     regions_out = {}
-    pending_yt = []  # (best_rank, apple_id)
+    if REGIONS_PATH.exists():
+        regions_out = json.loads(REGIONS_PATH.read_text(encoding="utf-8"))
 
-    # 1. Fetch all 6 regions first (0 YouTube quota)
+    pending_yt = []
+
+    # 1. Fetch all 6 regions with retry + fallback
     for region in REGIONS:
-        rss_url = f"https://rss.marketingtools.apple.com/api/v2/{region}/music/most-played/100/songs.json"
-        feed = fetch_json(rss_url)["feed"]["results"]
+        try:
+            feed = fetch_region_chart(region)
+            print(f"[{region}] Fetched {len(feed)} tracks.")
+        except Exception as e:
+            print(f"[{region}] Skipped due to network error: {e}")
+            continue
+
         region_tracks = []
-
         for rank, track in enumerate(feed, start=1):
-            apple_id = track["id"]
-            title = track["name"]
-            artist = track["artistName"]
-            art_200 = track["artworkUrl100"].replace("100x100bb", "200x200bb")
-
+            apple_id = track["apple_id"]
             entry = catalog.get(apple_id, {
                 "apple_id": apple_id,
-                "title": title,
-                "artist": artist,
-                "artwork_url": art_200,
+                "title": track["title"],
+                "artist": track["artist"],
+                "artwork_url": track["artwork_url"],
                 "regions": [],
-                "yt_id": ""
+                "yt_id": "",
             })
 
             if region not in entry["regions"]:
@@ -69,10 +121,11 @@ def main():
 
             region_tracks.append({
                 "rank": rank,
-                "apple_id": apple_id
+                "apple_id": apple_id,
             })
 
         regions_out[region] = region_tracks
+        time.sleep(0.5)
 
     # 2. Resolve highest-ranked missing tracks first (cap at 85/day)
     seen = set()
