@@ -1,0 +1,29 @@
+name: Weekly Music Catalog Sync
+
+on:
+  schedule:
+    - cron: "0 3 * * 1" # Runs automatically every Monday at 03:00 UTC (10:00 WIB)
+  workflow_dispatch:     # Lets you also click "Run workflow" manually anytime
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build catalog & region JSONs
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+        run: python scripts/build_catalog.py
+      - name: Commit updated JSON files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/catalog.json data/regions.json
+          git diff --staged --quiet || git commit -m "Update weekly charts & catalog"
+          git push
