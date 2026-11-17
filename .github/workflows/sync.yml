@@ -2,8 +2,8 @@ name: Weekly Music Catalog Sync
 
 on:
   schedule:
-    - cron: "0 3 * * 1" # Runs automatically every Monday at 03:00 UTC (10:00 WIB)
-  workflow_dispatch:     # Lets you also click "Run workflow" manually anytime
+    - cron: "0 3 * * 1" # Every Monday at 03:00 UTC (10:00 WIB)
+  workflow_dispatch:     # Adds a manual "Run workflow" button in GitHub
 
 permissions:
   contents: write
@@ -11,6 +11,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: szstudio/megamusic/database/music
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,11 +22,11 @@ jobs:
       - name: Build catalog & region JSONs
         env:
           YT_API_KEY: ${{ secrets.YT_API_KEY }}
-        run: python scripts/build_catalog.py
+        run: python build_catalog.py
       - name: Commit updated JSON files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/catalog.json data/regions.json
-          git diff --staged --quiet || git commit -m "Update weekly charts & catalog"
+          git diff --staged --quiet || git commit -m "Update weekly music charts & catalog"
           git push
